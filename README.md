@@ -46,13 +46,12 @@ You'll need to **mock these services** in your implementation.
 
 Build REST APIs for Order management with the following operations:
 
-| Operation | Endpoint | Description |
-|-----------|----------|-------------|
-| Create Order | `POST /api/orders` | Create a new order |
-| Get Order | `GET /api/orders/{id}` | Retrieve order details |
-| List Orders | `GET /api/orders` | List orders (with pagination) |
-| Update Order | `PUT /api/orders/{id}` | Update an existing order |
-| Delete Order | `DELETE /api/orders/{id}` | Delete/Cancel an order |
+| Operation    | Endpoint               | Description                   |
+| ------------ | ---------------------- | ----------------------------- |
+| Create Order | `POST /api/orders`     | Create a new order            |
+| Get Order    | `GET /api/orders/{id}` | Retrieve order details        |
+| List Orders  | `GET /api/orders`      | List orders (with pagination) |
+| Update Order | `PUT /api/orders/{id}` | Cancel Order                  |
 
 ### External Service Integration
 
@@ -74,11 +73,13 @@ When creating or processing an order, your service must:
 ## Tech Stack
 
 ### Required
+
 - **Java**: 17 or higher
 - **Framework**: Spring Boot 3.x
 - **Build Tool**: Gradle
 
 ### Your Choice
+
 - Database (H2, PostgreSQL, MySQL, etc.)
 - HTTP Client (RestTemplate, WebClient, Feign, etc.)
 - Any additional libraries you find useful
@@ -97,6 +98,7 @@ docs/api-specs/
 ```
 
 **Important**: These services don't actually exist - you need to mock them in your tests and implementation. Consider how you would handle:
+
 - Service unavailability
 - Timeout scenarios
 - Error responses
@@ -108,14 +110,17 @@ docs/api-specs/
 Create your own repository and include:
 
 1. **Source Code**
+
    - Well-structured, clean code
    - Clear package organization
 
 2. **Tests**
+
    - Unit tests for business logic
    - Integration tests (optional but appreciated)
 
 3. **Documentation**
+
    - API documentation (Swagger/OpenAPI recommended)
    - Brief README explaining your design decisions
 
@@ -129,13 +134,13 @@ Create your own repository and include:
 
 We'll be looking at:
 
-| Criteria | What We Look For |
-|----------|------------------|
-| **Code Quality** | Clean code, readability, SOLID principles |
-| **Architecture** | Layer separation, dependency management, design patterns |
-| **MSA Integration** | External service handling, error handling, resilience |
-| **Testing** | Test coverage, test quality, mocking strategies |
-| **API Design** | RESTful conventions, proper HTTP status codes |
+| Criteria            | What We Look For                                         |
+| ------------------- | -------------------------------------------------------- |
+| **Code Quality**    | Clean code, readability, SOLID principles                |
+| **Architecture**    | Layer separation, dependency management, design patterns |
+| **MSA Integration** | External service handling, error handling, resilience    |
+| **Testing**         | Test coverage, test quality, mocking strategies          |
+| **API Design**      | RESTful conventions, proper HTTP status codes            |
 
 ### Bonus Points
 
