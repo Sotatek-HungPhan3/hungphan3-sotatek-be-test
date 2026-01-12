@@ -3,13 +3,13 @@ package com.sotatek.order.domain.exception;
 /**
  * Base exception for all domain-level errors.
  */
-public abstract class DomainException extends RuntimeException {
+public class DomainException extends RuntimeException {
 
-    protected DomainException(String message) {
+    public DomainException(String message) {
         super(message);
     }
 
-    protected DomainException(String message, Throwable cause) {
+    public DomainException(String message, Throwable cause) {
         super(message, cause);
     }
 }

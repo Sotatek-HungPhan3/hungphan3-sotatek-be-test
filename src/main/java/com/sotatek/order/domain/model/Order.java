@@ -41,7 +41,7 @@ public class Order {
             throw new IllegalArgumentException("Member ID must be positive");
         }
         if (items == null || items.isEmpty()) {
-            throw new IllegalArgumentException("Order must have at least one item");
+            throw new com.sotatek.order.domain.exception.DomainException("Order must have at least one item");
         }
         if (paymentMethod == null) {
             throw new IllegalArgumentException("Payment method is required");
@@ -122,12 +122,10 @@ public class Order {
      * Cancel the order.
      * Only PENDING and FAILED orders can be cancelled.
      * CONFIRMED orders cannot be cancelled (already paid).
-     * CANCELLED → CANCELLED is idempotent.
      */
     public void cancel() {
         if (this.status == OrderStatus.CANCELLED) {
-            // Idempotent - already cancelled
-            return;
+            throw new com.sotatek.order.domain.exception.DomainException("Order is already cancelled");
         }
         if (this.status == OrderStatus.CONFIRMED) {
             throw new InvalidStateTransitionException(

@@ -13,13 +13,13 @@ public record OrderItem(
         int quantity) {
     public OrderItem {
         if (productId == null || productId <= 0) {
-            throw new IllegalArgumentException("Product ID must be positive");
+            throw new com.sotatek.order.domain.exception.DomainException("Product ID must be positive");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be positive");
+            throw new com.sotatek.order.domain.exception.DomainException("Quantity must be positive");
         }
         if (unitPrice == null || unitPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Unit price cannot be negative");
+            throw new com.sotatek.order.domain.exception.DomainException("Unit price cannot be negative");
         }
     }
 

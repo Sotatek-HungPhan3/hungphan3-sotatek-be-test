@@ -2,6 +2,8 @@ package com.sotatek.order.api.dto;
 
 import com.sotatek.order.domain.model.Order;
 import com.sotatek.order.domain.model.OrderItem;
+import com.sotatek.order.domain.model.OrderStatus;
+import com.sotatek.order.domain.model.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,8 +17,8 @@ public record OrderResponse(
         Long memberId,
         List<OrderItemResponse> items,
         BigDecimal totalAmount,
-        String paymentMethod,
-        String status,
+        PaymentMethod paymentMethod,
+        OrderStatus status,
         Long paymentId,
         LocalDateTime createdAt,
         LocalDateTime updatedAt) {
@@ -30,8 +32,8 @@ public record OrderResponse(
                 order.getMemberId(),
                 items,
                 order.getTotalAmount(),
-                order.getPaymentMethod().name(),
-                order.getStatus().name(),
+                order.getPaymentMethod(),
+                order.getStatus(),
                 order.getPaymentId(),
                 order.getCreatedAt(),
                 order.getUpdatedAt());
