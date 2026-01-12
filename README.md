@@ -1,191 +1,101 @@
-# Order Microservice Challenge
+# Order Microservice Submission
 
-Welcome! This is a backend developer assessment designed to evaluate your skills in building microservices.
+This is the implementation of the Order Service challenge for the Musinsa Senior Backend Engineer interview.
 
-## The Challenge
+## 🚀 Overview
 
-Your mission is to build an **Order Service** - a microservice that handles order management while integrating with external services (Member, Product, and Payment services).
+The Order Service manages the lifecycle of customer orders, integrating with external Member, Product, and Payment services. It is built with **Clean Architecture** principles to ensure maintainability, testability, and scalability.
 
-**Time Limit**: 4 hours
+## 🏗️ Architecture & Design Decisions
 
-Don't worry - we're not looking for perfection. We want to see how you approach problems, structure your code, and handle real-world microservice scenarios.
+### Clean Architecture (Hexagonal)
 
----
+The project is organized into layers to isolate business logic from infrastructure:
 
-## System Architecture
+- **Domain Layer**: Contains Entities (`Order`, `OrderItem`), Enums, and Domain Services. It holds the core business rules and state machine (e.g., valid status transitions).
+- **Application Layer**: Contains Use Cases (`CreateOrderService`, `CancelOrderService`) and Ports (interfaces for external communication).
+- **API/Web Layer**: REST Controllers handling HTTP requests and DTO mapping.
+- **Infrastructure Layer**: Implementation of Ports (Database repositories, HTTP clients for external MSA).
 
-```
-                                    ┌─────────────────┐
-                                    │  Member Service │
-                                    │    (External)   │
-                                    └────────┬────────┘
-                                             │
-┌──────────┐      ┌─────────────────┐       │        ┌─────────────────┐
-│  Client  │─────▶│  Order Service  │───────┼───────▶│ Product Service │
-└──────────┘      │   (Your Task)   │       │        │    (External)   │
-                  └────────┬────────┘       │        └─────────────────┘
-                           │                │
-                           │                │        ┌─────────────────┐
-                           │                └───────▶│ Payment Service │
-                           │                         │    (External)   │
-                           ▼                         └─────────────────┘
-                  ┌─────────────────┐
-                  │    Database     │
-                  │  (Your Choice)  │
-                  └─────────────────┘
-```
+### Key Decisions:
 
-**Note**: The external services (Member, Product, Payment) are provided as OpenAPI specs only.
-You'll need to **mock these services** in your implementation.
+1. **Domain-Driven Design (DDD) flavor**: The `Order` class is an Aggregate Root that protects its invariants (e.g., an order cannot be cancelled if it's already confirmed).
+2. **Resilience**:
+   - Configured **Read Timeouts** (5s) for all external service calls using `JdkClientHttpRequestFactory`.
+   - **Graceful Error Handling**: Custom `GlobalExceptionHandler` maps domain/external errors to standard RESTful responses.
+3. **External Service Mocking**:
+   - Used `ConditionalOnProperty` to switch between `MockMemberClient` (standalone/dev) and `MemberClientAdapter` (production).
+   - **WireMock** is used for rigorous integration testing of MSA scenarios (timeouts, 5xx errors).
+4. **Consistency**: Transactions are managed at the Application layer (`@Transactional`) to ensure ACIDity during order creation and status updates.
 
----
+## 🛠️ Tech Stack
 
-## Requirements
+- **Java 17**
+- **Spring Boot 3.2**
+- **Spring Data JPA**
+- **Database**: PostgreSQL (Production), H2 (Testing)
+- **SpringDoc OpenAPI** (Swagger UI)
+- **WireMock** (Testing MSA integration)
 
-### Functional Requirements
+## 📖 API Documentation
 
-Build REST APIs for Order management with the following operations:
+Once the application is running, you can access the interactive API documentation at:
 
-| Operation    | Endpoint               | Description                   |
-| ------------ | ---------------------- | ----------------------------- |
-| Create Order | `POST /api/orders`     | Create a new order            |
-| Get Order    | `GET /api/orders/{id}` | Retrieve order details        |
-| List Orders  | `GET /api/orders`      | List orders (with pagination) |
-| Update Order | `PUT /api/orders/{id}` | Cancel Order                  |
+- **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- **API Docs (JSON)**: [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
 
-### External Service Integration
+## 🏃 How to Run
 
-When creating or processing an order, your service must:
+### Prerequisites
 
-1. **Validate Member** - Call Member Service to verify the member exists and is active
-2. **Check Product** - Call Product Service to verify product availability and stock
-3. **Process Payment** - Call Payment Service when the order is confirmed
+- Docker (optional, for PostgreSQL)
+- JDK 17+
 
-### Non-Functional Requirements
+### 1. Database Setup (Optional if using Docker Compose)
 
-- Proper error handling and meaningful error messages
-- Input validation
-- Logging for debugging and monitoring
-- Unit tests and/or integration tests
-
----
-
-## Tech Stack
-
-### Required
-
-- **Java**: 17 or higher
-- **Framework**: Spring Boot 3.x
-- **Build Tool**: Gradle
-
-### Your Choice
-
-- Database (H2, PostgreSQL, MySQL, etc.)
-- HTTP Client (RestTemplate, WebClient, Feign, etc.)
-- Any additional libraries you find useful
-
----
-
-## External Service Specs
-
-The OpenAPI specifications for external services are located in:
-
-```
-docs/api-specs/
-├── member-service.yaml    # Member validation API
-├── product-service.yaml   # Product & inventory API
-└── payment-service.yaml   # Payment processing API
-```
-
-**Important**: These services don't actually exist - you need to mock them in your tests and implementation. Consider how you would handle:
-
-- Service unavailability
-- Timeout scenarios
-- Error responses
-
----
-
-## What to Submit
-
-Create your own repository and include:
-
-1. **Source Code**
-
-   - Well-structured, clean code
-   - Clear package organization
-
-2. **Tests**
-
-   - Unit tests for business logic
-   - Integration tests (optional but appreciated)
-
-3. **Documentation**
-
-   - API documentation (Swagger/OpenAPI recommended)
-   - Brief README explaining your design decisions
-
-4. **How to Run**
-   - Clear instructions to build and run your service
-   - Any setup steps required
-
----
-
-## Evaluation Criteria
-
-We'll be looking at:
-
-| Criteria            | What We Look For                                         |
-| ------------------- | -------------------------------------------------------- |
-| **Code Quality**    | Clean code, readability, SOLID principles                |
-| **Architecture**    | Layer separation, dependency management, design patterns |
-| **MSA Integration** | External service handling, error handling, resilience    |
-| **Testing**         | Test coverage, test quality, mocking strategies          |
-| **API Design**      | RESTful conventions, proper HTTP status codes            |
-
-### Bonus Points
-
-These are optional but will make your submission stand out:
-
-- Circuit Breaker pattern for external service calls
-- Retry mechanism with exponential backoff
-- Comprehensive logging and monitoring hooks
-- Docker support
-- Database migration scripts
-
----
-
-## Getting Started
-
-This repository provides a minimal Spring Boot application to get you started:
+By default, the application is configured to use PostgreSQL. You can start one using Docker:
 
 ```bash
-# Clone this repository for reference
-git clone <this-repo-url>
+docker run --name order-db -e POSTGRES_DB=orderdb -e POSTGRES_USER=order -e POSTGRES_PASSWORD=order123 -p 5432:5432 -d postgres
+```
 
-# Check that it builds
+### 2. Build & Run (Manual)
+
+```bash
+# Build the project
 ./gradlew build
 
-# Run the application
+# Run binary
+java -jar build/libs/order-service-0.0.1-SNAPSHOT.jar
+
+# Or run using Gradle
 ./gradlew bootRun
 ```
 
-The application will start on `http://localhost:8080`
+### 3. Run with Docker Compose (Recommended)
 
-Now create your own repository and start building!
+You can run the entire stack (Database + Application) with a single command:
+
+```bash
+docker-compose up --build
+```
+
+The application will be available at `http://localhost:8080`.
+
+### 4. Run Tests
+
+```bash
+./gradlew test
+```
+
+## 🧪 Testing Strategy
+
+- **Unit Tests**: Focus on the `Order` aggregate and business logic in the Domain layer.
+- **Integration Tests**:
+  - **`OrderApiIntegrationTest`**: End-to-end tests for all REST endpoints.
+  - Uses **WireMock** to simulate external service behaviors (Member validation, Stock check, Payment processing).
+  - Covers success paths, validation errors, and MSA failure scenarios (timeouts, 503).
 
 ---
 
-## Tips
-
-- **Don't overthink it** - A working solution with clean code is better than an over-engineered incomplete one
-- **Time management** - Prioritize core functionality first, then add enhancements
-- **Show your thinking** - Comments and documentation help us understand your approach
-- **Test what matters** - Focus on testing critical business logic
-
----
-
-## Questions?
-
-If you have any questions about the requirements, please reach out to your interviewer.
-
-Good luck! We're excited to see what you build.
+_Developed as part of a technical assessment._
