@@ -93,12 +93,12 @@ Cấu hình database, external service URLs, timeout settings.
 
 ## Phase 4: Tests - 20 phút
 
+> Xem chi tiết tại: [04-test-strategy.md](04-test-strategy.md)
+
 | Test                           | Scope                                 |
 | ------------------------------ | ------------------------------------- |
 | `OrderTest.java`               | Domain state machine transitions      |
 | `OrderApiIntegrationTest.java` | Happy path + error cases với WireMock |
-
----
 
 ## Package Structure
 

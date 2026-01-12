@@ -1,0 +1,226 @@
+###
+### Order Service API - HTTP Client Test Suite
+### Base URL: http://localhost:8080
+### 
+### Prerequisites:
+### 1. START APPLICATION WITH MOCK PROFILE:
+###    ./mvnw spring-boot:run -Dspring-boot.run.profiles=mock
+###    (IMPORTANT: Do NOT use 'dev' profile, as it disables mocks!)
+### 
+### 2. Mock Data Logic (Verified from Source Code):
+###    - Member IDs: 
+###         - 999 -> 404 Not Found
+###         - 998 -> 400 Inactive
+###         - Others -> Active (Name: "Mock User {id}")
+###    - Product IDs: 
+###         - 999 -> 404 Not Found
+###         - 998 -> 400 Discontinued (Price 99.99)
+###         - 997 -> 400 Out of Stock (Price 49.99)
+###         - 996 -> 400 Insufficient Stock (Stock=2)
+###         - Others -> Available (Price 29.99)
+###    - Payment Logic (based on Total Amount):
+###         - Ends in .99 -> FAILED
+###         - Ends in .50 -> PENDING
+###         - Others -> COMPLETED
+###
+
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+###############################################################################
+# 1. CREATE ORDER - Success Scenarios
+###############################################################################
+
+### 1.1. Create Order - Success (CONFIRMED)
+# Logic: Product 101 (Price 29.99) * 2 = 59.98.
+# .98 ends -> Payment COMPLETED -> Order CONFIRMED
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 1,
+  "items": [
+    {
+      "productId": 101,
+      "quantity": 2
+    }
+  ],
+  "paymentMethod": "CREDIT_CARD"
+}
+
+### 1.2. Create Order - Success Multi-Item (CONFIRMED)
+# Logic: 3 items total. 3 * 29.99 = 89.97.
+# .97 ends -> Payment COMPLETED -> Order CONFIRMED
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 2,
+  "items": [
+    {
+      "productId": 101,
+      "quantity": 1
+    },
+    {
+      "productId": 102,
+      "quantity": 2
+    }
+  ],
+  "paymentMethod": "CREDIT_CARD"
+}
+
+###############################################################################
+# 2. CREATE ORDER - Pending & Failed Scenarios
+###############################################################################
+
+### 2.1. Create Order - PENDING (Triggered by Amount .50)
+# Logic: Need total ending in .50.
+# Product Price 29.99.
+# 50 items * 29.99 = 1499.50.
+# Ends in .50 -> Payment PENDING -> Order PENDING
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 1,
+  "items": [
+    {
+      "productId": 105,
+      "quantity": 50
+    }
+  ],
+  "paymentMethod": "BANK_TRANSFER"
+}
+
+### 2.2. Create Order - FAILED (Triggered by Amount .99)
+# Logic: Need total ending in .99.
+# Product Price 29.99 * 1 = 29.99.
+# .99 ends -> Payment FAILED -> Order FAILED
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 1,
+  "items": [
+    {
+      "productId": 101,
+      "quantity": 1
+    }
+  ],
+  "paymentMethod": "CREDIT_CARD"
+}
+
+###############################################################################
+# 3. CREATE ORDER - Validation/Mock Errors
+###############################################################################
+
+### 3.1. Create Order - Member Not Found
+# Mock Member 999 -> 404 Not Found
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 999,
+  "items": [
+    {
+      "productId": 101,
+      "quantity": 1
+    }
+  ],
+  "paymentMethod": "CREDIT_CARD"
+}
+
+### 3.2. Create Order - Member Inactive
+# Mock Member 998 -> Inactive
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 998,
+  "items": [
+    {
+      "productId": 101,
+      "quantity": 1
+    }
+  ],
+  "paymentMethod": "CREDIT_CARD"
+}
+
+### 3.3. Create Order - Product Not Found
+# Mock Product 999 -> 404
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 1,
+  "items": [
+    {
+      "productId": 999,
+      "quantity": 1
+    }
+  ],
+  "paymentMethod": "CREDIT_CARD"
+}
+
+### 3.4. Create Order - Insufficient Stock
+# Mock Product 996 (Stock=2). Request 10.
+POST {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+{
+  "memberId": 1,
+  "items": [
+    {
+      "productId": 996,
+      "quantity": 10
+    }
+  ],
+  "paymentMethod": "CREDIT_CARD"
+}
+
+###############################################################################
+# 4. GET & LIST ORDERS
+###############################################################################
+
+### 4.1. Get Order by ID
+GET {{baseUrl}}/api/orders/1
+Content-Type: {{contentType}}
+
+### 4.2. List All Orders
+GET {{baseUrl}}/api/orders
+Content-Type: {{contentType}}
+
+### 4.3. List Orders by Member
+GET {{baseUrl}}/api/orders?memberId=1
+Content-Type: {{contentType}}
+
+###############################################################################
+# 5. CANCEL ORDER
+###############################################################################
+
+### 5.1. Cancel Order - PENDING Order
+# Note: Use ID of order created in 2.1
+# Replace {orderId} with actual ID
+PUT {{baseUrl}}/api/orders/xxx
+Content-Type: {{contentType}}
+
+{
+  "status": "CANCELLED"
+}
+
+### 5.2. Cancel Order - FAILED Order
+# Note: Use ID of order created in 2.2
+# Replace {orderId} with actual ID
+PUT {{baseUrl}}/api/orders/xxx
+Content-Type: {{contentType}}
+
+{
+  "status": "CANCELLED"
+}
+
+###############################################################################
+# 6. HEALTH & DOCS
+###############################################################################
+
+### 6.1. API Docs
+GET {{baseUrl}}/api-docs

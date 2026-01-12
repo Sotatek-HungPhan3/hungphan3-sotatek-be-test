@@ -9,6 +9,7 @@ import com.sotatek.order.application.port.out.PaymentClientPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestClient;
  * HTTP Client adapter for Payment Service.
  */
 @Component
+@ConditionalOnProperty(name = "external-services.mock", havingValue = "false")
 public class PaymentClientAdapter implements PaymentClientPort {
 
     private static final Logger log = LoggerFactory.getLogger(PaymentClientAdapter.class);
