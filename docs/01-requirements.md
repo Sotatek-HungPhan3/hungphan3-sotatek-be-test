@@ -89,15 +89,17 @@
 
 ### FR-06: Error Handling
 
-| Lỗi                  | HTTP | Message                      |
-| -------------------- | ---- | ---------------------------- |
-| Member not found     | 404  | Member does not exist        |
-| Member not active    | 400  | Member is not active         |
-| Product not found    | 404  | Product does not exist       |
-| Product discontinued | 400  | Product is discontinued      |
-| Insufficient stock   | 400  | Not enough stock             |
-| Payment failed       | 422  | Payment rejected             |
-| Service unavailable  | 503  | External service unavailable |
+| Lỗi                  | HTTP | Message                      | Mô tả                                  |
+| -------------------- | ---- | ---------------------------- | -------------------------------------- |
+| Member not found     | 404  | Member does not exist        | Không tìm thấy memberId                |
+| Member not active    | 400  | Member is not active         | Member status INACTIVE/SUSPENDED       |
+| Product not found    | 404  | Product does not exist       | Không tìm thấy productId               |
+| Product discontinued | 400  | Product is discontinued      | Product status DISCONTINUED            |
+| Insufficient stock   | 400  | Not enough stock             | Stock < quantity yêu cầu               |
+| Payment failed       | 422  | Payment rejected             | Lỗi từ Payment Service (business fail) |
+| Service timeout      | 503  | External service timeout     | Timeout khi gọi external service       |
+| Service unavailable  | 503  | External service unavailable | Service down hoặc connection refused   |
+| Invalid transition   | 400  | Invalid state transition     | Ví dụ: Cancel đơn đã CONFIRMED         |
 
 ---
 
