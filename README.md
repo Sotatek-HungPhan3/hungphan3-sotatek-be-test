@@ -28,6 +28,19 @@ The project is organized into layers to isolate business logic from infrastructu
    - **WireMock** is used for rigorous integration testing of MSA scenarios (timeouts, 5xx errors).
 4. **Consistency**: Transactions are managed at the Application layer (`@Transactional`) to ensure ACIDity during order creation and status updates.
 
+## 📚 Design & Process Documentation
+
+For a deeper dive into the engineering process, please refer to the documents in `docs/en`:
+
+- **[Problem Understanding](docs/en/00-problem-understanding_en.md)**: Analysis of the requirements, bottlenecks, and assumptions.
+- **[Requirements Analysis](docs/en/01-requirements_en.md)**: Detailed functional and non-functional requirements.
+- **[System Design & Decomposition](docs/en/02-problem-decomposition_en.md)**: Domain breakdown and Clean Architecture boundaries.
+- **[Implementation Plan](docs/en/03-implementation-plan_en.md)**: Step-by-step development plan.
+- **[Test Strategy](docs/en/04-test-strategy_en.md)**: Comprehensive testing approach (Unit, Integration, WireMock).
+- **[Deployment Guide](docs/en/05-deployment_en.md)**: Containerization and deployment strategy.
+- **[Mock Guide](docs/en/MOCK_GUIDE_en.md)**: Values and scenarios for mocking external services (Member/Product/Payment).
+- **[Original Requirements](docs/en/99-original-requirement_en.md)**: The original challenge text.
+
 ## 🛠️ Tech Stack
 
 - **Java 17**
