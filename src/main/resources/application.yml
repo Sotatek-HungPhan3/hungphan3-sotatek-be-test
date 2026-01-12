@@ -25,7 +25,11 @@ server:
   port: 8080
 
 # External Services Configuration
+# Default: Use mock implementations for safety and standalone testing
+# Override in profile-specific configs (e.g., application-dev.yaml) to use real HTTP clients
 external-services:
+  mock: true
+
   member:
     base-url: http://localhost:8081
     timeout: 5000
@@ -51,21 +55,3 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
-
----
-# Test Profile
-spring:
-  config:
-    activate:
-      on-profile: test
-
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect

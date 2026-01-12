@@ -8,6 +8,7 @@ import com.sotatek.order.application.port.out.ProductClientPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -16,8 +17,10 @@ import java.util.Optional;
 
 /**
  * HTTP Client adapter for Product Service.
+ * Activated when: external-services.mock=false
  */
 @Component
+@ConditionalOnProperty(name = "external-services.mock", havingValue = "false")
 public class ProductClientAdapter implements ProductClientPort {
 
     private static final Logger log = LoggerFactory.getLogger(ProductClientAdapter.class);

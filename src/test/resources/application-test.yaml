@@ -1,0 +1,39 @@
+# Test Profile - For Automated Tests Only
+# Auto-activated by @SpringBootTest
+
+spring:
+  application:
+    name: order-service-test
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.H2Dialect
+
+# External Services - Will be mocked by WireMock in tests
+external-services:
+  member:
+    base-url: http://localhost:8081
+    timeout: 5000
+  product:
+    base-url: http://localhost:8082
+    timeout: 5000
+  payment:
+    base-url: http://localhost:8083
+    timeout: 5000
+
+# Logging
+logging:
+  level:
+    com.sotatek.order: INFO
+    org.springframework.web: WARN

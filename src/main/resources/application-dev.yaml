@@ -1,0 +1,12 @@
+# Dev Profile - Override for development environment
+# Activate with: --spring.profiles.active=dev
+# Inherits all settings from application.yml, only overrides specific values below
+
+# External Services - Use real HTTP clients (requires WireMock or actual services running)
+external-services:
+  mock: false
+
+# Logging - Add [DEV] prefix to distinguish dev logs
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [DEV] [%thread] %-5level %logger{36} - %msg%n"

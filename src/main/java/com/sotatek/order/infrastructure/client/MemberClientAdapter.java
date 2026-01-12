@@ -7,6 +7,7 @@ import com.sotatek.order.application.port.out.MemberClientPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -16,8 +17,10 @@ import java.util.Optional;
 
 /**
  * HTTP Client adapter for Member Service.
+ * Activated when: external-services.mock=false
  */
 @Component
+@ConditionalOnProperty(name = "external-services.mock", havingValue = "false")
 public class MemberClientAdapter implements MemberClientPort {
 
     private static final Logger log = LoggerFactory.getLogger(MemberClientAdapter.class);
