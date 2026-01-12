@@ -3,9 +3,7 @@
 ### Base URL: http://localhost:8080
 ### 
 ### Prerequisites:
-### 1. START APPLICATION WITH MOCK PROFILE:
-###    ./mvnw spring-boot:run -Dspring-boot.run.profiles=mock
-###    (IMPORTANT: Do NOT use 'dev' profile, as it disables mocks!)
+### 1. START APPLICATION WITH MOCK: external-services.mock: true in application.yml
 ### 
 ### 2. Mock Data Logic (Verified from Source Code):
 ###    - Member IDs: 

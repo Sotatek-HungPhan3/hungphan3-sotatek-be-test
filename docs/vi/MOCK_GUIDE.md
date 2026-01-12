@@ -1,3 +1,5 @@
+START APPLICATION WITH MOCK: external-services.mock: true in application.yml
+
 ## Mock Scenarios
 
 ### Member Service Mock

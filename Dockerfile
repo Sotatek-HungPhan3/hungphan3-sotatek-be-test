@@ -2,7 +2,10 @@
 FROM gradle:8-jdk17-alpine AS build
 WORKDIR /home/gradle/src
 COPY --chown=gradle:gradle . .
-RUN ./gradlew build -x test --no-daemon
+# Ensure gradlew has execution permissions and Unix line endings (Windows compat)
+RUN sed -i 's/\r$//' gradlew && \
+    chmod +x gradlew && \
+    ./gradlew build -x test --no-daemon
 
 # Run stage
 FROM eclipse-temurin:17-jre-alpine
